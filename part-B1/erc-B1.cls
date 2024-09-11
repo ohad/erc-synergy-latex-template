@@ -1,45 +1,121 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{erc-B1}[2019/02/26 erc-B1]
+
+\DeclareOption{guidance}{%
+  \PassOptionsToClass{guidance}{erc}
+}
+\DeclareOption{stricterc}{%
+  \PassOptionsToClass{stricterc}{erc}
+}
+\ProcessOptions{}
+
 \LoadClass{../erc}
+
 \RequirePackage[left=2cm,top=1.5cm,bottom=1.7cm,right=2cm,headsep=.45cm,footskip=.6cm]{geometry}
+
+
+%% Enforce structure of document
+% Assume \HasAbstract has been created by erc.cls
+\newif\ifHasSynopsis
+\newif\ifHasCV
+
+\AtEndDocument{%
+  %% Check synopsis is present
+  \ifHasSynopsis
+  \else
+  \ClassError{Part B1}{Missing synopsis section.
+    Add the {synopsis} environment after the abstract and before the
+    CV sections}
+  \fi
+  %% Check CVs section is present
+  \ifHasCV
+  \else
+  \ClassError{Part B1}{Missing curriculum vitae section.
+    Add the {cvs} environment after the abstract and before the CV sections}
+  \fi
+}
+
 
 \chead[Part B1]{Part B1}
 
-\def\maketitle{\vspace*{.45cm}{\centering\bfseries\Large
-ERC \erctype{} Grant \ercyear{}\\
-Research proposal [Part B1]\\
-\textit{(Part B1 is evaluated both in Step 1 and Step 2\\
-Part B2 is evaluated in Step 2 only)}\par
+\def\maketitle{\vspace*{.45cm}{\centering\bfseries%
+{\large ERC \erctype{} Grant \ercyear{}}\\
+{\Large Research proposal [Part B1]}\\
+\ercguidanceInline{
+\textit{(Part B1 is evaluated both in Step 1, Step 2, and Step 3,\\
+     Part B2 is only evaluated in Step 2 and Step 3)}}
+\\[.3\baselineskip]
 \normalfont\huge
-\vspace{.5cm}\@title\par
-\vspace{.7cm}\@acronym\par
+\@title\\
+\@acronym\\
 \normalfont\normalsize\raggedright\vspace{2cm}\begin{compactitem}
-\item \textbf{Principal investigator (PI):} \@author
-\item \textbf{Host institution:} \@institution
-\item \textbf{Proposal duration:} 60 months%
+\item \@author, \@institution
+\item \begin{tabular}[t]{@{}l@{, }l@{}}
+      \@otherauthors
+      \end{tabular}
+\item \textbf{Proposal duration:} \@monthcount{} months%
 \end{compactitem}
 \par\vspace{1.2em}}}
 
-\newcommand{\secsynopsis}{\pagebreak\section{Extended synopsis}}
-\newcommand{\seccv}{\pagebreak\section{Curriculum vitae}}
-\newcommand{\sectrack}{\pagebreak\section{Early achievements track-record}}
+\renewcommand\thesection{Section~\alph{section}:}
+\newcommand\bonesection[1]{%
+  \pagebreak%
+  \refstepcounter{section}
+  \section*{\thesection{} %
+    #1%
+  }%
+}
+\newcommand{\secsynopsis}{\bonesection{%
+    \textit{\underline{Extended Synopsis of the scientific proposal}
+            (max. 5 pages, references do not count towards the page limit)}}}
+\newcommand{\seccv}{\bonesection{%
+    \textit{\underline{Curriculum vitae and Track Record}
+           (max. 4 pages per each Principal Investigator)}}}
 
-\newcommand{\headfundingid}{{\centering\bfseries\itshape Appendix: All
-ongoing and submitted grants and funding of the PI (Funding
-ID)\par}\vspace{1cm}}
+\newenvironment{synopsis}{%
+  \global\HasSynopsistrue%
+  \begin{ercguidance}
+  \textbf{\textit{\textcolor{DarkRed}{Do NOT split the sections and/or references
+      in Part B1 and do NOT upload them as separate documents. The
+      peer reviewers will only receive one single document for
+      evaluation at Step 1. Hence, Part B1 should contain all elements
+      as explained in this template. If some parts of Part B1 are
+      uploaded in the submission system as separate attachments, the
+      peer reviewers will not have access to them.}}}
+\end{ercguidance}
 
-\newenvironment{fundingidtable}{%
-\noindent\begin{tabular}{p{4.2em}>{\raggedright}p{5.2em}>{\raggedleft}p{3em}>{\raggedright}p{4.5em}>{\raggedright}p{4.5em}p{15em}}
-\toprule
-\centering \textit{Title}&
-\centering \textit{Funding Source}&
-\centering \textit{Amount (\texteuro)}&
-\centering \textit{Period}&
-\textit{Role of \newline the PI}&
-\textit{Relation to \newline the current ERC}\tabularnewline
-\midrule}
-{\bottomrule\end{tabular}}
 
+  \secsynopsis{}%
+  \begin{ercguidance}
+  [The Extended Synopsis should give a concise presentation of the
+    scientific proposal, with particular attention to the
+    ground-breaking nature of the research project, which will allow
+    evaluation panels to assess, in Step 1 of the evaluation, the
+    feasibility of the outlined scientific approach. Describe the
+    proposed work in the context of the state of the art of the
+    field. It is important that the extended synopsis contains minimum
+    information relevant to the evaluation criteria, since the
+    \textbf{Step 1 panel will have access only to part B1}.
+
+  References to literature should also be included. Please use a
+  reference style that is commonly used in your discipline such as
+  American Chemical Society (ACS) style, American Medical Association
+  (AMA) style, Modern Language Association (MLA) style, etc. and that
+  allows the evaluators to easily retrieve each reference.
+
+  \bigskip
+
+  \textbf{Please respect the following formatting constraints: Times
+    New Roman, Arial or similar, at least font size 11, margin sizes
+    (2.0 cm side and 1.5 cm top and bottom), single line spacing.}]
+\end{ercguidance}
+}{%
+\begin{refsection}
+  \pagebreak
+\defbibheading{subsection}[\bibname]{\subsection*{##1}}
+\printbibliography[prenote=bolditalics,heading=subsection]
+\end{refsection}
+}
 % CV
 \providecommand*{\listitemsymbol}{\textbullet}
 
@@ -84,21 +160,215 @@ ID)\par}\vspace{1cm}}
 \newif\if@sectionopen\@sectionopenfalse
 \newif\if@firstcvline\@firstcvlinefalse % bug if initially set to true...
 
-\newcommand*{\closecvsection}{%
-  \if@sectionopen%
-    \end{longtable}%
-    \phantomsection% reset the anchor for hyperrefs
-    \@sectionopenfalse\fi\vspace{-2em}}
+\newcommand*{\cvsection}{%
+  \section*{PERSONAL DETAILS \textit{(max. 1 page per each Principal Investigator)}}%
+  \addcontentsline{toc}{subsection}{Personal Details}%
+}
 
-\newcommand*{\cvsection}[1]{%
-  \closecvsection{}%
-  \@sectionopentrue%
-  \phantomsection{}%
-  \addcontentsline{toc}{subsection}{#1}%
-  \begin{longtable}[l]{@{}l@{\hspace{\separatorcolumnwidth}}@{}p{\maincolumnwidth}@{}}%
-  {\color{sectionrectanglecolor}\rule{\hintscolumnwidth}{1ex}}
-&\sectionstyle{#1}\\[1ex]%
-  \@firstcvlinetrue}
+\newenvironment{cvs}{%
+  \global\HasCVtrue%
+  \newif\ifHasAnyCVs%
+  \seccv{}
+  \begin{ercguidance}
+    [You may modify the below template if necessary.]
+  \end{ercguidance}
+}{%
+  \ifHasAnyCVs
+  \else
+  \ClassError{Part B1}{No curriculum vitae entered.
+    Add a {cv}{first name}{family name} environment}
+  \fi
+}
+
+
+\newcommand\NameCV[2]{#2, #1:\\}
+\newcommand\UniqueID{%
+  \global\HasUniqueIDtrue%
+  Researcher unique identifier(s):}
+\newcommand\NoUniqueID{%
+  \global\HasUniqueIDtrue%
+  \ClassWarning{\@current@CV{} chose not to use a unique researcher identifier.}
+}
+\newcommand\ORCID[1]{%
+  \raisebox{-2pt}{\includegraphics[height=1em]{orcid}}
+  \url{https://orcid.org/#1}}
+\newcommand\ResearchID[1]{%
+  \raisebox{-2pt}{\includegraphics[height=1em]{rid.png}}
+  \url{https://researchid.co/#1}
+}
+\newcommand\WebsiteCV[1]{%
+  \HasWebsitetrue%
+  \\URL for web site: %
+  \url{#1}\\%
+}
+
+\newcommand\CVitem[1]{\par\textbf{\textbullet\qquad#1}\par\bigskip}
+
+\newcommand\EducationCV{\CVitem{Education and key qualifications}}
+\newcommand\CurrentPosititionCV{\CVitem{Current position(s)}}
+\newcommand\PreviousPosititionCV{\CVitem{Previous position(s)}}
+\newcommand\YearRange[2]{#1--#2}
+\newcommand\PhDDate[3]{#3/#2/#1} % Format: {YYYY}{MM}{DD}
+\newcommand\Position[4]{%
+  \begin{tabular}[t]{@{}l@{}}
+    #1\\
+    #2, #3, #4
+  \end{tabular}
+}
+
+\newcommand\checkCV[2]{#1\else\ClassError{Part B1}{#2}\fi}
+
+\newenvironment{cv}[2]{
+  \global\HasAnyCVstrue%
+  \def\@current@CV{#1 #2}
+  \newif\ifHasAnyCVs%
+  \newif\ifHasUniqueID%
+  \newif\ifHasWebsite%
+  \newif\ifHasEducation%
+  \newif\ifHasCurrentPositions%
+  \newif\ifHasPreviousPositions%
+  \newif\ifHasAchievements%
+  \newif\ifHasRecognition%
+  \newif\ifHasBreaks%
+  \newif\ifHasOtherContributions%
+  \cvsection{}
+  \begin{ercguidance}
+  [Provide your personal details, your education and key qualifications,
+  current position(s) and relevant previous positions you have held.]
+  \end{ercguidance}
+
+  \NameCV{#1}{#2}
+}{%
+  \newpage
+  \checkCV\ifHasUniqueID{\@current@CV{}: Please add unique researcher ID using
+    \string{\UniqueID} and \string{\ORCID} or \string{ResearchID} or
+    choose not to using \string{\NoUniqueID}}%
+  %
+  \checkCV\ifHasWebsite{\@current@CV: Please add your website with \string{\WebsiteCV{url}}}
+  \checkCV\ifHasEducation{\@current@CV: Please add an {education} environment}
+  \checkCV\ifHasCurrentPositions{\@current@CV: Please add a {current position(s)} environment}
+  \checkCV\ifHasPreviousPositions{\@current@CV: Please add a {previous position(s)} environment}
+  \checkCV\ifHasAchievements{\@current@CV: Please add a {research achievements} environment}
+  \checkCV\ifHasRecognition{\@current@CV: Please add a {peer recognition} environment}
+  \checkCV\ifHasBreaks{\@current@CV: Please add a {breaks etc} environment}
+  \checkCV\ifHasOtherContributions{\@current@CV: Please add a {other contributions} environment}
+}
+
+\newenvironment{education}{%
+  \global\HasEducationtrue%
+  \EducationCV{}%
+  \begin{tabular}{@{}l@{\ \ }l}%
+}{%
+  \end{tabular}
+}
+
+\newenvironment{current position(s)}{%
+  \global\HasCurrentPositionstrue%
+  \par\bigskip
+  \CurrentPosititionCV{}%
+  \begin{tabular}{@{}l@{--}l@{\ \ }l}%
+}{%
+  \end{tabular}%
+}
+
+\newenvironment{previous position(s)}{%
+  \global\HasPreviousPositionstrue%
+  \par\bigskip
+  \PreviousPosititionCV{}%
+  \begin{tabular}{@{}l@{--}l@{\ \ }l}%
+}{%
+  \end{tabular}%
+}
+
+
+\newenvironment{research achievements}{%
+  \global\HasAchievementstrue%
+  \section*{RESEARCH ACHIEVEMENTS AND PEER RECOGNITION}
+  \bigskip
+  \subsection*{Research achievements}
+  \bigskip
+  \begin{ercguidance}
+  [Provide a list of up to ten research outputs that demonstrate how you
+  have advanced knowledge in your field with an emphasis on more
+  recent achievements, such as publications, articles deposited in a
+  publicly available preprint server, books, book chapters, conference
+  proceedings, data sets, software, patents, licenses, standards,
+  start-up businesses or any other research outputs you deem relevant
+  in relation to your research field and your project.
+
+  You may include a short, factual explanation of the significance of
+  the selected outputs, your role in producing each of them, and how
+  they demonstrate your capacity to successfully carry out your
+  proposed project.]
+\end{ercguidance}
+
+}{%
+%
+}
+
+\newenvironment{peer recognition}{%
+  \global\HasRecognitiontrue%
+  \subsection*{Peer recognition}
+  \bigskip
+  \begin{ercguidance}
+  [Provide a list of selected examples of significant recognition by
+  your peers if applicable, such as prizes, awards, fellowships,
+  elected academy memberships, invited presentations to major
+  conferences or any other examples of significant recognition you
+  deem relevant in relation to your research field and project.
+
+  You may include a short explanation of the significance of the
+  listed examples.]
+\end{ercguidance}
+}{%
+%
+}
+
+\newenvironment{breaks etc}{
+  \global\HasBreakstrue%
+  \section*{ADDITIONAL INFORMATION}
+  \bigskip
+  \begin{ercguidance}
+   In this section you may provide relevant additional information on
+   your research career to provide context to the evaluation panels
+   when assessing your research achievements and peer recognition as
+   described above.
+  \end{ercguidance}
+  \subsection*{Career breaks, unconventional career paths and major life events}
+  \bigskip
+  \begin{ercguidance}
+  [You may include a short, factual explanation of career breaks or
+    diversity in your career paths such as secondments, volunteering,
+    part-time work, time spent in different sectors or the effects of
+    major life events such as long term illness as well as the effects
+    of pandemic restrictions on research productivity.]
+  \end{ercguidance}
+}{%
+  %
+}
+
+\newenvironment{other contributions}{%
+  \global\HasOtherContributionstrue%
+  \subsection*{Other contributions to the research community}
+  \bigskip
+  \begin{ercguidance}
+    [You may include a list of particularly noteworthy contributions to
+  the research community you have made other than research
+  achievements and peer recognition and a short explanation of these
+  contributions. The purpose of this section is to allow the panels to
+  take a more rounded view of your career and achievements and to
+  ensure that any additional responsibilities, commitments and
+  leadership roles that you have taken on beyond your individual
+  research activities are recognised and taken into account.]
+\end{ercguidance}
+}{%
+\begin{ercguidance}
+(for more information see ‘Information for Applicants to the Synergy Grant 2025 Call’)]
+\end{ercguidance}
+}
+
+
+
 
 \newcommand*{\cvitem}[2]{%
   \if@firstcvline

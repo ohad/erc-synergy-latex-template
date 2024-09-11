@@ -1,4 +1,4 @@
-\documentclass{erc-B2}
+\documentclass[guidance]{erc-B2}
 
 \input{../erc-common}
 
@@ -11,44 +11,37 @@
 
 \usepackage{pgfgantt}
 
+\usepackage{lipsum}
+
 \begin{document}
-\maketitle
-\input{../abstract}
 
-\vfill\pagebreak
+% Use \subsection's and \input's as needed
 
-% Use \section's and \input's as needed
+\begin{objectives}
+  \label{sec:objectives}
+  \todo{Fill me.}
+\end{objectives}
 
-\section{Context and Vision}
-\label{sec:intro}
-\input{parts/intro}
-
-\section{Challenges}
-\label{sec:challenges}
-\input{parts/challenges}
-
-\section{Objectives}
-\label{sec:objectives}
-\input{parts/objectives}
-
-\section{State of the Art}
-\label{sec:related}
-\input{parts/related}
-
-\section{Methodology} 
+\begin{methodology}
 \label{sec:research}
-\input{parts/research}
+\input{parts/gantt}
+\end{methodology}
 
-\section{Impact}
-\label{sec:impact}
-\input{parts/impact}
-
-\section{Resources}
+\begin{resources}
 \label{sec:resources}
-\input{parts/resources}
+% Follow guidance, e.g.
+\subsection{The Principal Investigators}
+\end{resources}
 
-\pagebreak
-\bigskip
-\printbibliography[prenote=bolditalics]
+% Makes authors in the following list appear in bold
+% Can be used to, e.g., highlight you in references not in CV or
+% collaborators that add their expertise to project
+\forcsvlist{\listadd\boldnames}
+           {{{\"{O}}fele, Karl}, {{\"{O}}fele, K.}, {{\"{O}}fele, K\bibinitperio}}
+
+\begin{ongoing grants and applications}
+\label{sec:ongoing}
+\input{parts/ongoing}
+\end{ongoing grants and applications}
 
 \end{document}

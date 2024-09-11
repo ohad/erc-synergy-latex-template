@@ -1,22 +1,24 @@
-\documentclass{erc-B1}
+% Options:
+% guidance: display guidance information
+% stricterc: when guidance is displayed, it's displayed closer to the
+%            ERC word template
+\documentclass[stricterc,guidance]{erc-B1}
 
 \input{../erc-common}
 
 \begin{document}
 \maketitle
+\begin{ercguidance}
+Please delete all text highlighted in grey in this template.
+\end{ercguidance}
 \input{../abstract}
-\vfill
-
-\secsynopsis{}
-
 \input{parts/synopsis}
 
-\seccv{}
-
-\input{parts/cv}
-
-\sectrack{}
-
-\input{parts/eatr}
+\begin{cvs}
+  \input{parts/cv-example} % cPI
+  \input{parts/cv-example} % oPI1
+  \input{parts/cv-example} % oPI2
+  \input{parts/cv-example} % oPI3
+\end{cvs}
 
 \end{document}
